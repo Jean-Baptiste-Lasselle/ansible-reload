@@ -30,6 +30,9 @@ Ansible (son exécution) est configuré(e) via :
   * À son exécution l'exécutable `ansible`, si la variable d'environnement `ANSIBLE_CONFIG` n'est pas définie, et que le fichier `$(pwd)/ansible.cfg` n'existe pas, pour chaque utilisateur d'un hôte `UNIX / GNU linux`, le fichier `~/.ansible.cfg` s'il existe, est utilisé comme  fichier de configuration pour cette exécution, et surcharge le fichier `/etc/ansible/ansible.cfg`. 
   * À son exécution l'exécutable `ansible`, si la variable d'environnement `ANSIBLE_CONFIG` n'est pas définie, et que le fichier `$(pwd)/ansible.cfg` n'existe pas, pour chaque utilisateur d'un hôte `UNIX / GNU linux`, le fichier `/etc/ansible/ansible.cfg`, s'il existe, est utilisé comme  fichier de configuration pour cette exécution. Il s'agit donc d'une configuration s'appliquant à tous les utilisateurs d'un hôte `UNIX / GNU linux`: pour les paramètres de configuration pour lesquels cela est nécessaire, chaque utilisateur le surcharge à l'aide du fichier `~/.ansible.cfg`.
 * des options de type GNU, `--mon-option-d-execution unev@leur`, utilisables à l'invocation de l'exécutable `ansible`, qui surchargent toutes les configurations par fichier.
+* _**Chemins Fichiers/Répertoires Dans la configuration**_ Pour chaque paramètre de configuration, lorsque la valeur de celui-ci est un chemin de fichier ou de répertoire :
+  * Ce chemin peut être précisé avec un chemin relatif
+  * Le chemin est relatif au répertoire dans lequel se trouve le fichier de configuration actif pour l'exécution `ansible` en cours.
 
 
 
