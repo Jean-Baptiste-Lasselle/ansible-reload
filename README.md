@@ -21,16 +21,41 @@ Source : https://docs.ansible.com/ansible/latest/user_guide/intro_getting_starte
 
 ## Ansible Configuration 
 
-Ansible est configuré via : 
+Ansible (son exécution) est configuré(e) via : 
 
 * Les variables d'environnement définies pour le processus d'exécution de la commande `ansible`.
-* Un fichier de configuration au format `ini`, nommé `ansible.cfg`.
+* Un fichier de configuration au format `ini`, nommé `ansible.cfg`. Les fichiers `/etc/ansible/ansible.cfg` et  `~/.ansible.cfg`, sont recherchés, et : 
+  * pour chaque utilisateur d'un hôte `UNIX / GNU linux` le fichier `~/.ansible.cfg` surcharge le fichier `/etc/ansible/ansible.cfg`. 
+  * Le fichier `/etc/ansible/ansible.cfg` est donc une configuraiton s'appliquant à tous les utilisateurs d'un hôte `UNIX / GNU linux`, 
+  * Pour les paramètres de configuration pour lesquels cela est nécessaire, chaque utilisateur le surcharge à l'aide du fichier `~/.ansible.cfg`;
 * des options de type GNU, `--mon-option-d-execution unev@leur`, utilisables à l'invocation de l'exécutable `ansible`
 
-Au-delà de la version `2.4` d'Ansible, l'utilitaire `ansible-config` pemet de "tout savoir" sur la configuration (un peu comme `docker-compose config`, masi avec beaucoup plus d'informations) : 
 
-* ccc
-* cccc
+
+
+Au-delà de la version `2.4` d'Ansible, l'utilitaire [`ansible-config`](https://docs.ansible.com/ansible/latest/cli/ansible-config.html#ansible-config) permet de "tout savoir" sur la configuration (un peu comme `docker-compose config`, masi avec beaucoup plus d'informations) : 
+
+* pour voir la configuration de la configuration : 
+```bash
+ansible-configuration list
+```
+* Pour voir la configuration effective (un peu comme `docker-compose config`), ou seulement les changements de celle-ci : 
+
+```bash
+ansible-configuration dump
+ansible-configuration dump --only-changed
+```
+* lorsque l'on exécute la commande `ansible-configuration`, la variable d'environnement `ANSIBLE_CONFIG` permet (tout comme pour la commande principale `ansible`) de définir le chemin du fichier de configuration Ansible : 
+
+```bash
+export ANSIBLE_CONFIG=/etc/ansible/ansible.cfg
+mkdir -p /etc/justtosay
+cat /etc/ansible/ansible.cfg > /etc/justtosay/tangible.cfg
+export ANSIBLE_CONFIG=/etc/justtosay/tangible.cfg
+export ANSIBLE_CONFIG=~/.ansible.cfg
+ansible-configuration list
+```
+
 
 
 
