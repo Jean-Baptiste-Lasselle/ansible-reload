@@ -35,6 +35,33 @@ Ansible (son exécution) est configuré(e) via :
   * Le chemin est relatif au répertoire dans lequel se trouve le fichier de configuration actif pour l'exécution `ansible` en cours.
 
 
+### Recommandantions quant au ficheir de configuration
+
+**No `{{ CWD}}`**
+
+Son utilisation est un trou de sécurité, slon la doc offficielle, et est non-recommandée : je bannis son utilisation par `Lint`
+
+> 
+> #### Avoiding security risks with ansible.cfg in the current directory
+> 
+> If Ansible were to load ansible.cfg from a world-writable current working directory, it would create a serious security risk. Another user could place their own config file there, designed to make Ansible run malicious code both locally and remotely, possibly with elevated privileges. For this reason, Ansible will not automatically load a config file from the current working directory if the directory is world-writable.
+> 
+> If you depend on using Ansible with a config file in the current working directory, the best way to avoid this problem is to restrict access to your Ansible directories to particular user(s) and/or group(s). If your Ansible directories live on a filesystem which has to emulate Unix permissions, like Vagrant or Windows Subsystem for Linux (WSL), you may, at first, not know how you can fix this as chmod, chown, and chgrp might not work there. In most of those cases, the correct fix is to modify the mount options of the filesystem so the files and directories are readable and writable by the users and groups running Ansible but closed to others. For more details on the correct settings, see:
+> 
+> * for Vagrant, Jeremy Kendall’s blog post covers synced folder permissions.
+> * for WSL, the WSL docs and this Microsoft blog post cover mount options.
+> 
+> If you absolutely depend on storing your Ansible config in a world-writable current working directory, you can explicitly specify the config file via the ANSIBLE_CONFIG environment variable. Please take appropriate steps to mitigate the security concerns above before doing so.
+> 
+
+Moralité : 
+
+* Ne jamais utiliser un fichier de configuration `$(pwd)/ansible.cfg` dans le répertoire courant, sauf contrainte absolue. 
+* Si obligation d'utiliser un fichier de configuration dans le répertoire courant, alors ne jamais le faire qu'avec une gestion des droits d'exécution et écriture drastique, sur le répertoire courant : 
+  * Un groupe d'utilisateurs Linux unique et bien déterminé, dans lequel sont ajoutés uniquement les personnes autorisées à opérer avec les playbooks concernés.
+  * Les autres utilisateurs doivent se voir l'interdiction complète, d'écriture, lecture (IMPORTANT à cause des secrets), exécution.
+
+
 
 
 Au-delà de la version `2.4` d'Ansible, l'utilitaire [`ansible-config`](https://docs.ansible.com/ansible/latest/cli/ansible-config.html#ansible-config) permet de "tout savoir" sur la configuration (un peu comme `docker-compose config`, masi avec beaucoup plus d'informations) : 
