@@ -25,10 +25,11 @@ Ansible (son exécution) est configuré(e) via :
 
 * Les variables d'environnement définies pour le processus d'exécution de la commande `ansible`.
 * Un fichier de configuration au format `ini`, nommé `ansible.cfg`. Les fichiers `/etc/ansible/ansible.cfg` et  `~/.ansible.cfg`, sont recherchés, et : 
-  * pour chaque utilisateur d'un hôte `UNIX / GNU linux` le fichier `~/.ansible.cfg` surcharge le fichier `/etc/ansible/ansible.cfg`. 
-  * Le fichier `/etc/ansible/ansible.cfg` est donc une configuraiton s'appliquant à tous les utilisateurs d'un hôte `UNIX / GNU linux`, 
-  * Pour les paramètres de configuration pour lesquels cela est nécessaire, chaque utilisateur le surcharge à l'aide du fichier `~/.ansible.cfg`;
-* des options de type GNU, `--mon-option-d-execution unev@leur`, utilisables à l'invocation de l'exécutable `ansible`
+  * À son exécution l'exécutable `ansible` vérifie si la variable d'environnement `ANSIBLE_CONFIG` est définie, si elle l'est, et que sa valauer est le chemin d'un fichier existant, alors ce fichier est utilisé comme  fichier de configuration pour cette exécution.
+  * À son exécution l'exécutable `ansible`, si la variable d'environnement `ANSIBLE_CONFIG` n'est pas définie, recherche ans le répertoire courant, un fichier `./ansible.cfg`, s'il le trouve, il est utilisé comme  fichier de configuration pour cette exécution.
+  * À son exécution l'exécutable `ansible`, si la variable d'environnement `ANSIBLE_CONFIG` n'est pas définie, et que le fichier `$(pwd)/ansible.cfg` n'existe pas, pour chaque utilisateur d'un hôte `UNIX / GNU linux`, le fichier `~/.ansible.cfg` s'il existe, est utilisé comme  fichier de configuration pour cette exécution, et surcharge le fichier `/etc/ansible/ansible.cfg`. 
+  * À son exécution l'exécutable `ansible`, si la variable d'environnement `ANSIBLE_CONFIG` n'est pas définie, et que le fichier `$(pwd)/ansible.cfg` n'existe pas, pour chaque utilisateur d'un hôte `UNIX / GNU linux`, le fichier `/etc/ansible/ansible.cfg`, s'il existe, est utilisé comme  fichier de configuration pour cette exécution. Il s'agit donc d'une configuration s'appliquant à tous les utilisateurs d'un hôte `UNIX / GNU linux`: pour les paramètres de configuration pour lesquels cela est nécessaire, chaque utilisateur le surcharge à l'aide du fichier `~/.ansible.cfg`.
+* des options de type GNU, `--mon-option-d-execution unev@leur`, utilisables à l'invocation de l'exécutable `ansible`, qui surchargent toutes les configurations par fichier.
 
 
 
