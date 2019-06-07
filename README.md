@@ -23,7 +23,7 @@ Source : https://docs.ansible.com/ansible/latest/user_guide/intro_getting_starte
 ### Configurer Ansible pour qu'il fasse usage de `scp` en lieu et place de `SFTP`
 
 * Cela se fait daans le fichier de configuration `/etc/ansible/ansible.cfg`.
-* Dans ce repo un exemple de fichier de configuration Ansible, et dans ce fichier de configuration d'Ansible la section de configuration est explicite : 
+* Dans ce repo un exemple de [fichier de configuration `Ansible`](ttps://github.com/Jean-Baptiste-Lasselle/ansible-reload/blob/master/ansible.stock.cfg), et dans ce fichier de configuration d'Ansible la section de configuration est explicite : 
 
 ```ini
 
@@ -32,5 +32,6 @@ Source : https://docs.ansible.com/ansible/latest/user_guide/intro_getting_starte
 #   * True = use scp only
 #   * False = use sftp only
 #scp_if_ssh = smart
+# Et moi j'utilise systématiquement le mode 'smart'
 ```
 * cccc
