@@ -19,6 +19,24 @@ Source : https://docs.ansible.com/ansible/latest/user_guide/intro_getting_starte
 > Occasionally you’ll encounter a device that doesn’t support SFTP. This is rare, but should it occur, you can switch to SCP mode in Configuring Ansible.
 
 
+## Ansible Configuration 
+
+Ansible est configuré via : 
+
+* Les variables d'environnement définies pour le processus d'exécution de la commande `ansible`.
+* Un fichier de configuration au format `ini`, nommé `ansible.cfg`.
+* des options de type GNU, `--mon-option-d-execution unev@leur`, utilisables à l'invocation de l'exécutable `ansible`
+
+Au-delà de la version `2.4` d'Ansible, l'utilitaire `ansible-config` pemet de "tout savoir" sur la configuration (un peu comme `docker-compose config`, masi avec beaucoup plus d'informations) : 
+
+* ccc
+* cccc
+
+
+
+
+
+## Points of view
 
 ### Configurer Ansible pour qu'il fasse usage de `scp` en lieu et place de `SFTP`
 
