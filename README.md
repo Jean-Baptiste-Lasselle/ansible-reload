@@ -85,7 +85,7 @@ ansible-configuration list
 
 Ansible est un outil qui permet, à chacune de ses exécutions, de réaliser un certain nombre d'opérations, sur un parc quelconque de machines.
 
-Le parc de machines, est spécifié par configuration, et appelé inventaire (_inventory_). Le plus souvent, cet inventaire est spécifié dans un fichier de configuration dédié à cet effet, courramment nommé `./inventory` ou `./ma.petite.recette.inventory`.
+Le parc de machines, est spécifié par configuration, et appelé inventaire (_inventory_). Le plus souvent, cet inventaire est spécifié dans un fichier de configuration dédié à cet effet, courramment nommé `./inventory` ou `/etc/ansible/hosts` `./ma.petite.recette.inventory`.
 
 L'ensemble des opérations peut-être spécifié, par configuration et/ou spécifications d'options d'invocation.
 
@@ -98,11 +98,18 @@ Utiliser Ansible est simple, il s'agit :
 ### Authentifications au cours d'une exécution
 
 * Ansible utilise `SSH` pour opérer les machines d'un inventaire, donc s'authentifie au serveur `SSH` de chaque Machine de l'inventaire. La méthode d'authentification recommandée est celle faisant usage de clés privés / clés publiques, mais si l'on utilise l'option `ansible --ask-pass`, Ansible permettra une Authentification de type _username / password_. Le must de l'authentification aujorud'hui, est d'utiliser des clés SSH signées par une Autorité, comme `HashiCorp Vault`, afin d'avoir des clés `SSH` bien gérées / supervisées (HashiCorp Vault Logs), et qui expirent.
-* Au sein de chaque machine, un fois connecté via SSH, et donc authentifié comme étant un utilisateur `OS` précis, disons `bernard22`,  Ansible peut exécuter des commandes qui nécessitent une escalade de droits de `bernard22`. On précise à Ansible d'exécuter les opérations planifiées, avec une escalade de droits, à l'aide de l'option `ansible --ask-become-pass` : 
+* Au sein de chaque machine, un fois connecté via SSH, et donc authentifié comme étant un utilisateur `OS` précis, disons `bernard22`,  Ansible peut exécuter des commandes qui nécessitent une escalade de droits de `bernard22`. On précise à Ansible d'exécuter les opérations planifiées, avec une escalade de droits, à l'aide de l'option `ansible --become`, et on précise que la méthode d'authentification à l'utilitaire d'escalade de droits, est de type _username / password_ en utilisant conjointement l'option `--ask-become-pass` (ce qui donen la combinaison `ansible --become --ask-become-pass`) : 
   * Au sein des OS tels que les distributions `Debian` / `Ubuntu` / `CentOS`, un exécutable qui permet à un utilisateur de réaliser une telle escalade de droits, est le bien connu `sudo` : en utilisant l'option `ansible --ask-become-pass`, Ansible invoquera donc `sudo` sur les mahcines de l'inventaire exploitées par une distribution `GNU / Linux` `Debian`, `Ubuntu`, ou `CentOS`. 
-  * Cependant ansible a la possibilité de faire appel à d'autres utilitaires d'escalade de droits, commu `su` (switch user), ou encore `pbrun` (Powerbroker), `pfexec`, `dzdo` (Centrify), etc... . L'option `ansible --ask-become-pass` s'est appelée dans le passé `--ask-sudo-pass`, mais a été renommée `ansible --ask-become-pass`, depuis l'extension à ces autres outils d'escalade de droits.
+  * Cependant Ansible a la possibilité de faire appel à d'autres utilitaires d'escalade de droits, commu `su` (switch user), ou encore `pbrun` (Powerbroker), `pfexec`, `dzdo` (Centrify), etc... . L'option `ansible --ask-become-pass` s'est appelée dans le passé `--ask-sudo-pass`, mais a été renommée `ansible --ask-become-pass`, depuis l'extension à ces autres outils d'escalade de droits.
+  * Enfin (cf. https://docs.ansible.com/ansible/2.4/become.html), précisons tout de suite les options d'exécution, qui permettent de configurer le comportement d'Ansible pour l'escalade de droits (et donc utilisées dès lors que l'option `--become` est utilisée, peu importe si `--ask-become-pass` est utilisée conjointement ou non) : 
   
-
+  | Command line options         | WTF                                                                              |
+  | -----------------------------| ---------------------------------------------------------------------------------|
+  | `--ask-become-pass`, `-K`    |     _ask for privilege escalation password, does not imply become will be used_  |
+  | `--become`, `-b`             |     _run operations with become (no password implied)_                           |
+  | `--become-method=BECOME_METHOD`      |     _privilege escalation method to use (default=sudo), valid choices: [ `sudo` | `su` | `pbrun` | `pfexec` | `doas` | `dzdo` | `ksu` ]_      |
+  | `--become-user=BECOME_USER`      |     _run operations as this user (default=root), does not imply –become/-b_  |
+    
 
 
 
