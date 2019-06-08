@@ -24,7 +24,11 @@ Source : https://docs.ansible.com/ansible/latest/user_guide/intro_getting_starte
 Ansible (son exécution) est configuré(e) via : 
 
 * Les variables d'environnement définies pour le processus d'exécution de la commande `ansible`.
-* Un fichier de configuration au format `ini`, nommé `ansible.cfg`. Les fichiers `/etc/ansible/ansible.cfg` et  `~/.ansible.cfg`, sont recherchés, et : 
+* Un fichier de configuration au format `ini`, nommé `ansible.cfg`. 
+* À chacune de ses exécutions, `ansible` recherche ce fichier de configuration sur le système de fichiers, jusqu'à désigner un et un seul fichier, comme le fichier de configuration. 
+* Si `ansible` n'arrive pas à ainsi sélectionner un tel fichier de configuration, l'exécution `ansible` se terminera son exécution avec un code de retour d'erreur. 
+* À son installation, ansible provisionne un fichier de configuration à l'emplacement `/etc/ansible/ansible.cfg`, afin de fournir un fichier de configuration "par défaut", avec l'esprit _zero configuration / all defaults_ . 
+* Enfin, à chacune de ses exécutions, `ansible` sélectionne le fichier de configuration actif avec les règles suivantes :  
   * À son exécution l'exécutable `ansible` vérifie si la variable d'environnement `ANSIBLE_CONFIG` est définie, si elle l'est, et que sa valauer est le chemin d'un fichier existant, alors ce fichier est utilisé comme  fichier de configuration pour cette exécution.
   * À son exécution l'exécutable `ansible`, si la variable d'environnement `ANSIBLE_CONFIG` n'est pas définie, recherche ans le répertoire courant, un fichier `./ansible.cfg`, s'il le trouve, il est utilisé comme  fichier de configuration pour cette exécution.
   * À son exécution l'exécutable `ansible`, si la variable d'environnement `ANSIBLE_CONFIG` n'est pas définie, et que le fichier `$(pwd)/ansible.cfg` n'existe pas, pour chaque utilisateur d'un hôte `UNIX / GNU linux`, le fichier `~/.ansible.cfg` s'il existe, est utilisé comme  fichier de configuration pour cette exécution, et surcharge le fichier `/etc/ansible/ansible.cfg`. 
