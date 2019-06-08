@@ -4,19 +4,6 @@ It's not that I miss metallica at all, just that I needed a personal bare-metal 
 
 So this survey is doomed to become a gitbook, which will deal with all I konw about Ansible, as a next-step prep.
 
-# Quotes from the official doc
-
-Source : https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html
-
-
-* Pour celui-là, il faut faire un POC avec un Bastion SSH, un jump configuré dans le cycle IAAC ops avec le fichier `~/.ssh/config` :  
-> By default, Ansible will try to use native OpenSSH for remote communication when possible. This enables ControlPersist (a performance feature), Kerberos, and options in `~/.ssh/config` such as Jump Host setup.
-* Pour celui-là, je vais faireun POC montrant qu'il vaut mieux utiliser les SSH signed keys gérées par `HashiCorp Vault`, au lieu des _Kerberized Keys_ évoquées par la doc ansible : 
->  If you wish to use features like Kerberized SSH and more, consider using Fedora, macOS, or Ubuntu as your control machine until a newer version of OpenSSH is available for your platform.
-* Pour celui-là, on fera un test avec `HashiCorp Packer` gérant des images `CentOS 6`, `CentOS 7`, et `Fedora 2x`, pour déterminer à partir de quelle version on a ue version assez récente d' `OpenSSH` pour permettre l'utilisation de  `ControlPersist`, et en avoir l'amélioration de performances apportée par `ControlPersist` : 
->  However, when using Enterprise Linux 6 operating systems as the control machine (Red Hat Enterprise Linux and derivatives such as CentOS), the version of OpenSSH may be too old to support ControlPersist. On these operating systems, Ansible will fallback into using a high-quality Python implementation of OpenSSH called ‘paramiko’.
-* Pour celui-là, je vais mettre ne oeuvre un exemple montrant comment configurer Ansible pour qu'il fasse usage de `scp` en lieu et place de `SFTP` : 
-> Occasionally you’ll encounter a device that doesn’t support SFTP. This is rare, but should it occur, you can switch to SCP mode in Configuring Ansible.
 
 
 ## Ansible Configuration 
@@ -39,7 +26,7 @@ Ansible (son exécution) est configuré(e) via :
   * Le chemin est relatif au répertoire dans lequel se trouve le fichier de configuration actif pour l'exécution `ansible` en cours.
 
 
-### Recommandantions quant au ficheir de configuration
+### Recommandantions quant au fichier de configuration
 
 **No `{{ CWD}}`**
 
@@ -94,11 +81,34 @@ ansible-configuration list
 
 
 
+## Ansible Execution
+
+Ansible est un outil qui permet, à chacune de ses exécutions, de réaliser un certain nombre d'opérations, sur un parc quelconque de machines.
+
+Le parc de machines, est spécifié par configuration, et appelé inventaire (_inventory_). Le plus souvent, cet inventaire est spécifié dans un fichier de configuration dédié à cet effet, courramment nommé `./inventory` ou `./ma.petite.recette.inventory`.
+
+L'ensemble des opérations peut-être spécifié, par configuration et/ou spécifications d'options d'invocation.
+
+Utiliser Ansible est simple, il s'agit :
+
+* d'exécuter un exécutable de nom de fichier `ansible`, sur une machine `Machine1`,
+* Ansible utilise alors par défaut `OpenSSH`, afin de se connecter à chacune des machines de l'inventaire, puis réaliser les opérations souhaitées sur chaque machine.
 
 
-## Points of view
+### Authentifications au cours d'une exécution
 
-### Configurer Ansible pour qu'il fasse usage de `scp` en lieu et place de `SFTP`
+* Ansible utilise `SSH` pour opérer les machines d'un inventaire, donc s'authentifie au serveur `SSH` de chaque Machine de l'inventaire. La méthode d'authentification recommandée est celle faisant usage de clés privés / clés publiques, mais si l'on utilise l'option `ansible --ask-pass`, Ansible permettra une Authentification de type _username / password_. Le must de l'authentification aujorud'hui, est d'utiliser des clés SSH signées par une Autorité, comme `HashiCorp Vault`, afin d'avoir des clés `SSH` bien gérées / supervisées (HashiCorp Vault Logs), et qui expirent.
+* Au sein de chaque machine, un fois connecté via SSH, et donc authentifié comme étant un utilisateur `OS` précis, disons `bernard22`,  Ansible peut exécuter des commandes qui nécessitent une escalade de droits de `bernard22`. On précise à Ansible d'exécuter les opérations planifiées, avec une escalade de droits, à l'aide de l'option `ansible --ask-become-pass` : 
+  * Au sein des OS tels que les distributions `Debian` / `Ubuntu` / `CentOS`, un exécutable qui permet à un utilisateur de réaliser une telle escalade de droits, est le bien connu `sudo` : en utilisant l'option `ansible --ask-become-pass`, Ansible invoquera donc `sudo` sur les mahcines de l'inventaire exploitées par une distribution `GNU / Linux` `Debian`, `Ubuntu`, ou `CentOS`. 
+  * Cependant ansible a la possibilité de faire appel à d'autres utilitaires d'escalade de droits, commu `su` (switch user), ou encore `pbrun` (Powerbroker), `pfexec`, `dzdo` (Centrify), etc... . L'option `ansible --ask-become-pass` s'est appelée dans le passé `--ask-sudo-pass`, mais a été renommée `ansible --ask-become-pass`, depuis l'extension à ces autres outils d'escalade de droits.
+  
+
+
+
+
+## ANNEXES
+
+### ANNEXE A : Configurer Ansible pour qu'il fasse usage de `scp` en lieu et place de `SFTP`
 
 * Cela se fait daans le fichier de configuration `/etc/ansible/ansible.cfg`.
 * Dans ce repo un exemple de [fichier de configuration `Ansible`](ttps://github.com/Jean-Baptiste-Lasselle/ansible-reload/blob/master/ansible.stock.cfg), et dans ce fichier de configuration d'Ansible la section de configuration est explicite : 
@@ -113,3 +123,17 @@ ansible-configuration list
 # Et moi j'utilise systématiquement le mode 'smart'
 ```
 * cccc
+
+### ANNEXE B : Quotes from the official doc
+
+Source : https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html
+
+
+* Pour celui-là, il faut faire un POC avec un Bastion SSH, un jump configuré dans le cycle IAAC ops avec le fichier `~/.ssh/config` :  
+> By default, Ansible will try to use native OpenSSH for remote communication when possible. This enables ControlPersist (a performance feature), Kerberos, and options in `~/.ssh/config` such as Jump Host setup.
+* Pour celui-là, je vais faireun POC montrant qu'il vaut mieux utiliser les SSH signed keys gérées par `HashiCorp Vault`, au lieu des _Kerberized Keys_ évoquées par la doc ansible : 
+>  If you wish to use features like Kerberized SSH and more, consider using Fedora, macOS, or Ubuntu as your control machine until a newer version of OpenSSH is available for your platform.
+* Pour celui-là, on fera un test avec `HashiCorp Packer` gérant des images `CentOS 6`, `CentOS 7`, et `Fedora 2x`, pour déterminer à partir de quelle version on a ue version assez récente d' `OpenSSH` pour permettre l'utilisation de  `ControlPersist`, et en avoir l'amélioration de performances apportée par `ControlPersist` : 
+>  However, when using Enterprise Linux 6 operating systems as the control machine (Red Hat Enterprise Linux and derivatives such as CentOS), the version of OpenSSH may be too old to support ControlPersist. On these operating systems, Ansible will fallback into using a high-quality Python implementation of OpenSSH called ‘paramiko’.
+* Pour celui-là, je vais mettre ne oeuvre un exemple montrant comment configurer Ansible pour qu'il fasse usage de `scp` en lieu et place de `SFTP` : 
+> Occasionally you’ll encounter a device that doesn’t support SFTP. This is rare, but should it occur, you can switch to SCP mode in Configuring Ansible.
