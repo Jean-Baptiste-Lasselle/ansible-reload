@@ -107,7 +107,7 @@ Utiliser Ansible est simple, il s'agit :
   | -----------------------------| ---------------------------------------------------------------------------------|
   | `--ask-become-pass`, `-K`    |     _ask for privilege escalation password, does not imply become will be used_  |
   | `--become`, `-b`             |     _run operations with become (no password implied)_                           |
-  | `--become-method=BECOME_METHOD`      |   _privilege escalation method to use (default=sudo), valid choices: [ `sudo | su | pbrun | pfexec | doas | dzdo | ksu` ]_ |
+  | `--become-method=BECOME_METHOD`      |   _privilege escalation method to use (default=sudo), valid choices: [ `sudo`,  `su`, `pbrun`, `pfexec`, `doas`, `dzdo`, `ksu` ]_ |
   | `--become-user=BECOME_USER`      |     _run operations as this user (default=root), does not imply –become/-b_  |
     
 
