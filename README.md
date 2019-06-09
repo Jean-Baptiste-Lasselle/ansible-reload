@@ -30,7 +30,7 @@ Ansible (son exécution) est configuré(e) via :
 
 **No `{{ CWD}}`**
 
-Son utilisation est un trou de sécurité, slon la doc offficielle, et est non-recommandée : je bannis son utilisation par `Lint`
+Son utilisation est un trou de sécurité, selon la doc officielle elle-même : je bannis son utilisation par _`Lint`_ au sein de tous les repos playbookset roles.
 
 > 
 > #### Avoiding security risks with ansible.cfg in the current directory
